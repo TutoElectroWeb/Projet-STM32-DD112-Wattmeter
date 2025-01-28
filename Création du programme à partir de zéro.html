@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="STM32CUDEIDE">
+    <title>STM32 DD112 Wattmeter</title>
+    <style>
+        /* Styles pour le corps de page */
+        body {
+            font-family: 'Open Sans', sans-serif;   /* Utilise la police 'Open Sans' avec une alternative sans-serif */
+            line-height: 1.6;                       /* Définit l'espacement entre les lignes du texte */
+            margin: 0;                              /* Enlève la marge par défaut du navigateur */
+            padding: 20px;                          /* Ajoute un espacement interne de 20 pixels */
+            background:#f4f4f4;                   /* Définit la couleur de fond légèrement grise */
+            color:#333                            /* Définit la couleur du texte principale */
+        }
+
+        /* Styles pour les en-têtes */
+        h1 {
+            font-size: 2.5em;        /* taille de la police de 2,5 fois la taille normale */
+            color: #0055a5;        /* couleur bleu foncé pour le texte */
+            text-align: center;      /* centre le texte horizontalement */
+        }
+
+        h2 {
+            font-size: 2em;          /* taille de la police 2 fois la taille normale */
+            color: #0055a5;        /* couleur bleu foncé pour le texte */
+            text-align: center;      /* centre le texte horizontalement */
+        }
+
+        h3 {
+            font-size: 1.5em;        /* taille de la police 1,5 fois la taille normale */
+            color: #003366;        /* couleur bleu foncé pour le texte */
+        }
+
+        /* Styles pour les liens */
+        a {
+            color: #0095ff;         /* couleur bleu pour les liens */
+            text-decoration: none;    /* enlève la décoration par défaut (soulignement) */
+        }
+
+        a:hover {
+            text-decoration: underline; /* ajoute un soulignement au survol */
+        }
+
+        /* Styles pour les listes */
+
+        ul, ol {
+            margin: 5px 0;          /* marge verticale de 5 pixels */
+            margin-left: 10%;
+            padding: 0 20px;        /* ajoute un espacement à gauche de 20 pixels */
+        }
+
+        li {
+            margin-bottom: 5px;     /* ajoute un espacement inférieur de 5 pixels pour chaque élément de liste */
+        }
+
+        /* Styles pour les images */
+        img {
+            display: block;         /* affiche l'image en tant qu'élément de bloc */
+            margin: 20px auto;      /* centre l'image horizontalement avec une marge verticale de 20 pixels */
+            max-width: 100%;        /* empêche l'image de dépasser la largeur de son conteneur */
+        }
+
+        /* Styles pour les éléments de code */
+        b {
+            color: #d70000;                                    /* couleur rouge foncé pour l'élément <b> */
+            font-family: 'Courier New', Courier, monospace;      /* utilise la police 'Courier New' ou une alternative monospace */
+        }
+
+        .code {
+            border: 2px solid #000;       /* Bordure noire de 2 pixels */
+            padding: 10px;                  /* Espacement interne de 10 pixels */
+            margin: 10px auto;              /* Centre l'élément horizontalement */
+            background-color: #f4f4f4;    /* Fond légèrement gris */
+            font-family: monospace;         /* Police monospace pour le code */
+            white-space: pre-wrap;          /* Conserves les espaces et les sauts de ligne, mais autorise les retours à la ligne */
+            word-wrap: break-word;          /* Permet de couper les mots trop longs pour éviter de dépasser */
+            overflow: auto;                 /* Ajoute des barres de défilement si le contenu dépasse */
+            display: block;                 /* Assure que l'élément prend toute la largeur disponible */
+            line-height: 0.8;               /* Réduit l'espacement entre les lignes */
+            width: 80%;                     /* Largeur de l'élément à 60% de la largeur du conteneur */
+        }
+
+        .style_1
+        {
+            color: #d00000;
+        }
+
+        .style_2
+        {
+            color: #d00000;
+        }
+
+        .style_4
+        {
+            color: #007f00;
+        }
+
+        .style_5
+        {
+            color: #00007f;
+            font-weight: bold;
+        }
+
+        .style_6
+        {
+            color: #ff8000;
+        }
+
+        .style_9
+        {
+            color: #007f7f;
+        }
+
+        .style_10
+        {
+            color: #301010;
+        }
+
+        .style_11
+        {
+            color: #000000;
+        }
+
+        .style_16
+        {
+            color: #991111;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>STM32 DD112 Wattmeter</h1>
+
+    <h2 id="1">Création du programme à partir de zéro</h2>
+
+    <p>Il faut au préalable installer la suite logiciel ST suivante :</p>
+
+    <ul>
+        <li><a href="https://www.st.com/en/development-tools/stm32cubemx.html" target="_blank">STM32CubeMX</a></li>
+        <li><a href="https://www.st.com/en/development-tools/stm32cubeide.html" target="_blank">STM32CubeIDE</a></li>
+        <li><a href="https://www.st.com/en/development-tools/stm32cubeprog.html" target="_blank">STM32CubeProgrammer</a></li>
+    </ul>
+
+    <p>Il faut également disposé d'une connection internet</p>
+
+    <p>On démarre <b>STM32CubeIDE</b> et on clique sur le <b>i</b> puis <b>Start new STM32 project</b>.</p>
+
+    <div class="conteneur"><img src=".img/Start1.png" alt="image non disponible" style="width:1000px;height:531px;"></div>
+
+    <p>Ensuite :</p>
+
+    <ol>
+        <li>On clique sur <b>Board Selector</b></li>
+        <li>On cherche sa carte en tapant le numéro L152 ou autre et on choisi le modèle correspondant </li>
+        <li>On la sélectionne, en bas à droite dans <b>Board List</b> <br/>
+        <i>(un bug peut vous faire sortir du mode <b>Board Selector retourner y avant de faire le Next</b>)</i></li>
+        <li>Puis on clique sur <b>Next</b></li>
+    </ol>
+
+    <div><img src=".img/Start2.png" alt="image non disponible"></div>
+
+    <p>On choisi un nom à son projet et on clique sur <b>Finish</b> en répondant <b>oui</b> au popup pour installer le firmware
+        de la carte et la configuration par défaut des pins.</p>
+
+    <div><img src=".img/Start3.png" alt="image non disponible"></div>
+
+    <p>Cette fenêtre s'ouvre :</p>
+
+    <div><img src=".img/Start4.png" alt="image non disponible"></div>
+
+    <p>Sur chaque Pin :</p>
+
+    <p>Si on clique droit dessus avec la souris : on peut modifier le label etc ...<br/>
+    Si on clique gauche dessus avec la souris : on peut modifier le mode du GPIO.</p>
+
+    <p>J'ai renommé le label de <b>PA5</b> en <b>USER_LED</b>.</p>
+
+
+
+    <h2>Configurer la carte STM32</h2>
+
+
+    <h3>Activer la communication I2C</h3>
+
+    <p>Le protocole I2C est couramment utilisé pour la communication entre des microcontrôleurs et des périphériques externes,
+        on peut théoriquement connecter jusqu'à 127 périphériques sur un seul bus maître.
+        Les périphériques ont une adresse unique sur 7 bits pour permettre la communication avec un microcontrôleur maître.</p>
+
+    <p>Dans le menu à gauche :</p>
+
+    <ol>
+        <li>On ouvre le fichier <b>.ioc</b></li>
+        <li>On ouvre l'onglet "<b>Connectivity"</b></li>
+        <li>On clique sur <b>I2C1</b> </li>
+        <li>On active l'I2C1</li>
+        <li>Puis on clique sur <b>GPIO Settings</b></li>
+        <li>On câblera sur ces 2 GPIO: PB6 le SDA et PB7 le SCL de nos capteurs I2C</li>
+        <li>Maintenant on peut générer le code pour prendre en compte la modification</li>
+    </ol>
+
+    <div><img src=".img/I2C1.png" alt="image non disponible"></div>
+
+    <p>On repère PB6 et PB7 sur la carte et on y connectera notre périphérique I2C :</p>
+
+    <div><img src=".img/I2C2.png" alt="image non disponible"></div>
+
+
+
+    <h3 id="3">Activer l'ADC (Analog-to-Digital Converter) avec plusieurs canaux</h3>
+
+    <p>L'ADC (Analog-to-Digital Converter) sur les microcontrôleurs STM32 est un outil puissant pour convertir des signaux analogiques en données numériques.</p>
+
+    <p>Dans le menu à gauche :</p>
+
+    <ol>
+        <li>On ouvre le fichier <b>.ioc</b></li>
+        <li>On ouvre l'onglet "<b>Analog"</b></li>
+        <li>On clique sur <b>ADC</b> </li>
+        <li>On active le IN0 et IN1 comme canal</li>
+        <li>Puis on clique sur <b>DMA Settings</b></li>
+        <li>On clique sur Add et on ajoute l'ADC</li>
+    </ol>
+
+    <div><img src=".img/ADC1.png" alt="image non disponible"></div>
+
+    <p>comme ceci :</p>
+
+    <div><img src=".img/ADC2.png" alt="image non disponible"></div>
+
+    <p>Maintenant :</p>
+
+    <ol>
+        <li>On clique sur <b>Parameter Settings</b></li>
+        <li>On active le scan mode</li>
+    </ol>
+
+    <div><img src=".img/ADC3.png" alt="image non disponible"></div>
+
+    <p>Ensuite :</p>
+
+    <ol>
+        <li>Toujours dans <b>Parameter Settings</b></li>
+        <li>On scroll vers le bas</li>
+        <li>Dans ADC Regular ConversionMode</li>
+        <li>On met 2 pour le nombre de conversion</li>
+        <li>On configure les 2 canaux, Channel 0 et 1 dans Rank0 et Rank1</li>
+    </ol>
+
+    <div><img src=".img/ADC4.png" alt="image non disponible"></div>
+
+    <p>Pour finir :</p>
+
+    <ol>
+        <li>On clique sur <b>GPIO Settings</b></li>
+        <li>On câblera sur ces 2 GPIO: PA0 et PA1  nos signaux analogiques</li>
+        <li>Maintenant on peut générer le code pour prendre en compte la modification</li>
+    </ol>
+
+    <div><img src=".img/ADC5.png" alt="image non disponible"></div>
+
+    <p>On repère PA0 et PA1 sur la carte et on y connectera nos signaux analogiques à analyser :</p>
+
+    <div><img src=".img/ADC6.png" alt="image non disponible"></div>
+
+    <p>On va activé la prise en compte des chiffres décimaux par le programme,
+        pour cela on clique droit avec la souris sur le projet et on va dans <b>Propriétés</b>.</p>
+
+    <div><img src=".img/FLOAT1.png" alt="image non disponible"></div>
+
+    <p>Ensuite on active l'option :</p>
+
+    <div><img src=".img/FLOAT2.png" alt="image non disponible"></div>
+
+    <p>Maintenant on génère le code en cliquant sur la roue dentée :</p>
+
+    <div><img src=".img/GENPROG.png" alt="image non disponible"></div>
+
+    <p>Le fichier <b>main.c</b> a été modifié en fonction de la configuration du fichier <b>.ioc</b>.</p>
+
+    <div><img src=".img/GEN2.png" alt="image non disponible"></div>
+
+
+
+
+    <h2>Création du programme</h2>
+
+    <p>On va donc modifier le fichier <b>main.c</b>, on commence par importer les bibliothèques nécessaire en copiant ces 2 lignes :</p>
+
+    <p class="code">
+        <span class="style_9">#include&nbsp;</span><span class="style_6">&lt;stdio.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;importe&nbsp;la&nbsp;librairie&nbsp;la&nbsp;communication&nbsp;série</span><br />
+        <span class="style_9">#include&nbsp;</span><span class="style_6">&lt;string.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;importe&nbsp;la&nbsp;librairie&nbsp;pour&nbsp;manipuler&nbsp;des&nbsp;chaînes&nbsp;de&nbsp;caractères</span><br />
+    </p>
+
+    <p>dans l'espace nommé <b>Private includes</b> entre <b>USER CODE BEGIN Includes</b> et <b>USER CODE END Includes</b>.</p>
+
+    <div><img src=".img/PROG1.png" alt="image non disponible"></div>
+
+    <p>On déclare nos #Define en ajoutant ces lignes : </p>
+
+    <p class="code">
+        <span class="style_9">#define&nbsp;</span><span class="style_11">I2C_ADDR&nbsp;</span><span class="style_4">0x3f&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Addresse&nbsp;I2C&nbsp;du&nbsp;PCF8574</span><br />
+        <span class="style_9">#define&nbsp;</span><span class="style_11">RS_BIT&nbsp;&nbsp;&nbsp;</span><span class="style_4">0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Register&nbsp;Select&nbsp;bit</span><br />
+        <span class="style_9">#define&nbsp;</span><span class="style_11">EN_BIT&nbsp;&nbsp;&nbsp;</span><span class="style_4">2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;ENable&nbsp;bit</span><br />
+        <span class="style_9">#define&nbsp;</span><span class="style_11">BL_BIT&nbsp;&nbsp;&nbsp;</span><span class="style_4">3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;BackLight&nbsp;bit</span><br />
+        <span class="style_9">#define&nbsp;</span><span class="style_11">D4_BIT&nbsp;&nbsp;&nbsp;</span><span class="style_4">4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Data&nbsp;4&nbsp;bit</span><br />
+        <span class="style_9">#define&nbsp;</span><span class="style_11">D5_BIT&nbsp;&nbsp;&nbsp;</span><span class="style_4">5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Data&nbsp;5&nbsp;bit</span><br />
+        <span class="style_9">#define&nbsp;</span><span class="style_11">D6_BIT&nbsp;&nbsp;&nbsp;</span><span class="style_4">6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Data&nbsp;6&nbsp;bit</span><br />
+        <span class="style_9">#define&nbsp;</span><span class="style_11">D7_BIT&nbsp;&nbsp;&nbsp;</span><span class="style_4">7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Data&nbsp;7&nbsp;bit</span><br />
+        <span class="style_9">#define&nbsp;</span><span class="style_11">LCD_COLS&nbsp;</span><span class="style_4">16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Nombre&nbsp;de&nbsp;colonnes&nbsp;du&nbsp;LCD</span><br />
+        <span class="style_9">#define&nbsp;</span><span class="style_11">LCD_ROWS&nbsp;</span><span class="style_4">2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Nombre&nbsp;de&nbsp;lignes&nbsp;du&nbsp;LCD</span><br />
+    </p>
+
+    <p>Dans l'espace nommé <b>Private define</b> entre <b>USER CODE BEGIN PD</b> et <b>USER CODE END PD</b> comme ceci :</p>
+
+    <div><img src=".img/PROG2.png" alt="image non disponible"></div>
+
+    <p>On déclare nos variables en ajoutant ces lignes : </p>
+
+    <p class="code">
+        <span class="style_16">uint8_t&nbsp;</span><span class="style_11">backlight_state&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">1</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;un&nbsp;flag&nbsp;pour&nbsp;le&nbsp;rétroéclairage&nbsp;du&nbsp;LCD</span><br />
+        <span class="style_16">uint16_t&nbsp;</span><span class="style_11">adc_data</span><span class="style_10">[</span><span class="style_4">2</span><span class="style_10">];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Un&nbsp;tableau&nbsp;pour&nbsp;stocker&nbsp;nos&nbsp;2&nbsp;valeurs</span><br />
+        <span class="style_16">uint8_t&nbsp;</span><span class="style_11">EndOfConversion&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">0</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Un&nbsp;flag&nbsp;pour&nbsp;la&nbsp;conversion</span><br />
+        <span class="style_5">const&nbsp;float&nbsp;</span><span class="style_11">d1&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">7.0630954e-2</span><span class="style_10">;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Constante&nbsp;de&nbsp;l'équation&nbsp;issue&nbsp;du&nbsp;datasheet&nbsp;du&nbsp;DD112</span><br />
+        <span class="style_5">const&nbsp;float&nbsp;</span><span class="style_11">d2&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">7.3540264e-4</span><span class="style_10">;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Constante&nbsp;de&nbsp;l'équation&nbsp;issue&nbsp;du&nbsp;datasheet&nbsp;du&nbsp;DD112</span><br />
+        <span class="style_5">const&nbsp;float&nbsp;</span><span class="style_11">d3&nbsp;</span><span class="style_10">=&nbsp;-</span><span class="style_4">6.365981e-7</span><span class="style_10">;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Constante&nbsp;de&nbsp;l'équation&nbsp;issue&nbsp;du&nbsp;datasheet&nbsp;du&nbsp;DD112</span><br />
+        <span class="style_5">const&nbsp;float&nbsp;</span><span class="style_11">d4&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">1.0050892e-9</span><span class="style_10">;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Constante&nbsp;de&nbsp;l'équation&nbsp;issue&nbsp;du&nbsp;datasheet&nbsp;du&nbsp;DD112</span><br />
+        <span class="style_5">int&nbsp;</span><span class="style_11">PW_Dw&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">0</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Pour&nbsp;Stocker&nbsp;la&nbsp;valeur&nbsp;de&nbsp;la&nbsp;puissance&nbsp;Directe&nbsp;en&nbsp;Watt</span><br />
+        <span class="style_5">int&nbsp;</span><span class="style_11">PW_Rw&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">0</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Pour&nbsp;Stocker&nbsp;la&nbsp;valeur&nbsp;de&nbsp;la&nbsp;puissance&nbsp;Réfléchie&nbsp;en&nbsp;Watt</span><br />
+        <span class="style_5">const&nbsp;</span><span class="style_16">uint16_t&nbsp;</span><span class="style_11">Gain&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">50</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Le&nbsp;Gain&nbsp;(à&nbsp;modifier&nbsp;selon&nbsp;la&nbsp;partie&nbsp;amplification&nbsp;du&nbsp;signal)</span><br />
+    </p>
+
+    <p>Dans l'espace nommé <b>Private variables</b> entre <b>USER CODE BEGIN PV</b> et <b>USER CODE END PV</b> comme ceci :</p>
+
+    <div><img src=".img/PROG3.png" alt="image non disponible"></div>
+
+    <p>On déclare le prototype de nos fonctions situer après le main en ajoutant ces lignes : </p>
+
+    <p class="code">
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_write_nibble</span><span class="style_10">(</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">nibble</span><span class="style_10">,&nbsp;</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">rs</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Écrire&nbsp;4&nbsp;bits&nbsp;sur&nbsp;l'écran&nbsp;LCD&nbsp;(R/W)(Register&nbsp;Select)</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_send_cmd</span><span class="style_10">(</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">cmd</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Envoyer&nbsp;une&nbsp;commande&nbsp;à&nbsp;l'écran&nbsp;LCD</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_send_data</span><span class="style_10">(</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">data</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Envoyer&nbsp;des&nbsp;données&nbsp;à&nbsp;l'écran&nbsp;LCD</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_init</span><span class="style_10">();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Initialiser&nbsp;l'écran&nbsp;LCD</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_write_string</span><span class="style_10">(</span><span class="style_5">char&nbsp;</span><span class="style_10">*</span><span class="style_11">str</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Écrire&nbsp;une&nbsp;chaîne&nbsp;de&nbsp;caractères&nbsp;sur&nbsp;l'écran&nbsp;LCD</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_set_cursor</span><span class="style_10">(</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">row</span><span class="style_10">,&nbsp;</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">column</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Placer&nbsp;le&nbsp;curseur&nbsp;à&nbsp;une&nbsp;position&nbsp;précise&nbsp;sur&nbsp;l'écran&nbsp;LCD</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_clear</span><span class="style_10">(</span><span class="style_5">void</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Effacer&nbsp;l'écran&nbsp;LCD</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_backlight</span><span class="style_10">(</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">state</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Contrôler&nbsp;le&nbsp;rétroéclairage&nbsp;de&nbsp;l'écran&nbsp;LCD</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">HAL_ADC_ConvCpltCallback</span><span class="style_10">(</span><span class="style_11">ADC_HandleTypeDef&nbsp;</span><span class="style_10">*</span><span class="style_11">hadc</span><span class="style_10">);&nbsp;</span><span class="style_2">//&nbsp;Callback&nbsp;de&nbsp;la&nbsp;conversion&nbsp;ADC&nbsp;complète</span><br />
+    </p>
+
+    <p>Dans l'espace nommé <b>Private function prototypes</b> entre <b>USER CODE BEGIN PFP</b> et <b>USER CODE END PFP</b> comme ceci :</p>
+
+    <div><img src=".img/PROG4.png" alt="image non disponible"></div>
+
+    <p>On crée nos fonctions de traitement du signal en ajoutant ces lignes : </p>
+
+    <p class="code">
+        <span class="style_2">//&nbsp;fonction&nbsp;qui&nbsp;retourne&nbsp;la&nbsp;valeur&nbsp;de&nbsp;l'ADC&nbsp;en&nbsp;tension</span><br />
+        <span class="style_5">float&nbsp;</span><span class="style_11">convertADCValueToVoltage</span><span class="style_10">(</span><span class="style_5">int&nbsp;</span><span class="style_11">adcValue</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">return&nbsp;</span><span class="style_11">adcValue&nbsp;</span><span class="style_10">*&nbsp;</span><span class="style_4">3.3&nbsp;</span><span class="style_10">/&nbsp;</span><span class="style_4">4096</span><span class="style_10">;</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;fonction&nbsp;qui&nbsp;convertie&nbsp;la&nbsp;tension&nbsp;en&nbsp;mV</span><br />
+        <span class="style_5">float&nbsp;</span><span class="style_11">convertVoltageToMillivolts</span><span class="style_10">(</span><span class="style_5">float&nbsp;</span><span class="style_11">voltage</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">return&nbsp;</span><span class="style_11">voltage&nbsp;</span><span class="style_10">*&nbsp;</span><span class="style_4">1000</span><span class="style_10">;</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;fonction&nbsp;issue&nbsp;du&nbsp;datasheet&nbsp;du&nbsp;DD112&nbsp;pour&nbsp;convertir&nbsp;le&nbsp;signal&nbsp;en&nbsp;Kw</span><br />
+        <span class="style_5">float&nbsp;</span><span class="style_11">calculatePower</span><span class="style_10">(</span><span class="style_5">float&nbsp;</span><span class="style_11">TmV</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">float&nbsp;</span><span class="style_11">PKw&nbsp;</span><span class="style_10">=&nbsp;(</span><span class="style_11">d1</span><span class="style_10">*</span><span class="style_11">TmV</span><span class="style_10">)&nbsp;+&nbsp;(</span><span class="style_11">d2</span><span class="style_10">*(</span><span class="style_11">TmV</span><span class="style_10">*</span><span class="style_11">TmV</span><span class="style_10">))&nbsp;+&nbsp;(</span><span class="style_11">d3</span><span class="style_10">*(</span><span class="style_11">TmV</span><span class="style_10">*</span><span class="style_11">TmV</span><span class="style_10">*</span><span class="style_11">TmV</span><span class="style_10">))&nbsp;+&nbsp;(</span><span class="style_11">d4</span><span class="style_10">*(</span><span class="style_11">TmV</span><span class="style_10">*</span><span class="style_11">TmV</span><span class="style_10">*</span><span class="style_11">TmV</span><span class="style_10">*</span><span class="style_11">TmV</span><span class="style_10">));</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">return&nbsp;</span><span class="style_11">PKw</span><span class="style_10">;</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;fonction&nbsp;qui&nbsp;affiche&nbsp;les&nbsp;datas&nbsp;dans&nbsp;la&nbsp;com&nbsp;série&nbsp;et&nbsp;update&nbsp;l'écran&nbsp;LCD</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">displayData</span><span class="style_10">(</span><span class="style_16">uint32_t&nbsp;</span><span class="style_11">adcValue0</span><span class="style_10">,&nbsp;</span><span class="style_16">uint32_t&nbsp;</span><span class="style_11">adcValue1</span><span class="style_10">,&nbsp;</span><span class="style_5">float&nbsp;</span><span class="style_11">tensionADC0amp</span><span class="style_10">,&nbsp;</span><span class="style_5">float&nbsp;</span><span class="style_11">tensionADC1amp</span><span class="style_10">,&nbsp;</span><span class="style_5">float&nbsp;</span><span class="style_11">tensionADC0mV</span><span class="style_10">,&nbsp;</span><span class="style_5">float&nbsp;</span><span class="style_11">tensionADC1mV</span><span class="style_10">,&nbsp;</span><span class="style_5">int&nbsp;</span><span class="style_11">PW_Dw</span><span class="style_10">,&nbsp;</span><span class="style_5">int&nbsp;</span><span class="style_11">PW_Rw</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">printf</span><span class="style_10">(</span><span class="style_6">"value&nbsp;channel&nbsp;0:&nbsp;%lu\r\nvalue&nbsp;channel&nbsp;1:&nbsp;%lu\r\n"</span><span class="style_10">,&nbsp;</span><span class="style_11">adcValue0</span><span class="style_10">,&nbsp;</span><span class="style_11">adcValue1</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">printf</span><span class="style_10">(</span><span class="style_6">"tensionADC0amp:&nbsp;%f\r\ntensionADC1amp:&nbsp;%f\r\n"</span><span class="style_10">,&nbsp;</span><span class="style_11">tensionADC0amp</span><span class="style_10">,&nbsp;</span><span class="style_11">tensionADC1amp</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">printf</span><span class="style_10">(</span><span class="style_6">"tensionADC0mV:&nbsp;%f\r\ntensionADC1mV:&nbsp;%f\r\n"</span><span class="style_10">,&nbsp;</span><span class="style_11">tensionADC0mV</span><span class="style_10">,&nbsp;</span><span class="style_11">tensionADC1mV</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">printf</span><span class="style_10">(</span><span class="style_6">"PWD:&nbsp;%d\r\nPWR:&nbsp;%d\r\n"</span><span class="style_10">,&nbsp;</span><span class="style_11">PW_Dw</span><span class="style_10">,&nbsp;</span><span class="style_11">PW_Rw</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">char&nbsp;</span><span class="style_11">int_to_textL1</span><span class="style_10">[</span><span class="style_4">12</span><span class="style_10">]&nbsp;=&nbsp;{</span><span class="style_4">0</span><span class="style_10">};&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;on&nbsp;déclare&nbsp;un&nbsp;buffer&nbsp;vide&nbsp;int_to_textL1</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">char&nbsp;</span><span class="style_11">int_to_textL2</span><span class="style_10">[</span><span class="style_4">12</span><span class="style_10">]&nbsp;=&nbsp;{</span><span class="style_4">0</span><span class="style_10">};&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;on&nbsp;déclare&nbsp;un&nbsp;buffer&nbsp;vide&nbsp;int_to_textL2</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">sprintf</span><span class="style_10">(</span><span class="style_11">int_to_textL1</span><span class="style_10">,&nbsp;</span><span class="style_6">"PWD:&nbsp;%d&nbsp;W"</span><span class="style_10">,&nbsp;</span><span class="style_11">PW_Dw</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;on&nbsp;stock&nbsp;la&nbsp;valeur&nbsp;du&nbsp;premier&nbsp;canal&nbsp;dans&nbsp;le&nbsp;buffer&nbsp;int_to_textL1</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">sprintf</span><span class="style_10">(</span><span class="style_11">int_to_textL2</span><span class="style_10">,&nbsp;</span><span class="style_6">"PWR:&nbsp;%d&nbsp;W"</span><span class="style_10">,&nbsp;</span><span class="style_11">PW_Rw</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;on&nbsp;stock&nbsp;la&nbsp;valeur&nbsp;du&nbsp;second&nbsp;canal&nbsp;dans&nbsp;le&nbsp;buffer&nbsp;int_to_textL2</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">lcd_clear</span><span class="style_10">();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;on&nbsp;efface&nbsp;l'écran</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">lcd_set_cursor</span><span class="style_10">(</span><span class="style_4">0</span><span class="style_10">,&nbsp;</span><span class="style_4">0</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;on&nbsp;se&nbsp;place&nbsp;ligne&nbsp;0&nbsp;colonne&nbsp;0</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">lcd_write_string</span><span class="style_10">(</span><span class="style_11">int_to_textL1</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;on&nbsp;affiche&nbsp;ce&nbsp;qu'il&nbsp;y&nbsp;a&nbsp;dans&nbsp;le&nbsp;buffer&nbsp;int_to_textL1</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">lcd_set_cursor</span><span class="style_10">(</span><span class="style_4">1</span><span class="style_10">,&nbsp;</span><span class="style_4">0</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;on&nbsp;se&nbsp;place&nbsp;ligne&nbsp;1&nbsp;colonne&nbsp;0</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">lcd_write_string</span><span class="style_10">(</span><span class="style_11">int_to_textL2</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;on&nbsp;affiche&nbsp;ce&nbsp;qu'il&nbsp;y&nbsp;a&nbsp;dans&nbsp;le&nbsp;buffer&nbsp;int_to_textL2</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;fonction&nbsp;qui&nbsp;traite&nbsp;le&nbsp;signal&nbsp;et&nbsp;affiche&nbsp;les&nbsp;datas</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">processADCData</span><span class="style_10">(</span><span class="style_16">uint32_t&nbsp;</span><span class="style_11">adc_data_0</span><span class="style_10">,&nbsp;</span><span class="style_16">uint32_t&nbsp;</span><span class="style_11">adc_data_1</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;On&nbsp;récupère&nbsp;la&nbsp;tension&nbsp;amplifiée&nbsp;en&nbsp;volts&nbsp;pour&nbsp;les&nbsp;canaux&nbsp;0&nbsp;et&nbsp;1&nbsp;de&nbsp;l'ADC</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">float&nbsp;</span><span class="style_11">tensionADC0amp&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">convertADCValueToVoltage</span><span class="style_10">(</span><span class="style_11">adc_data_0</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">float&nbsp;</span><span class="style_11">tensionADC1amp&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">convertADCValueToVoltage</span><span class="style_10">(</span><span class="style_11">adc_data_1</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;On&nbsp;applique&nbsp;la&nbsp;division&nbsp;par&nbsp;le&nbsp;gain&nbsp;pour&nbsp;obtenir&nbsp;la&nbsp;tension&nbsp;réelle&nbsp;de&nbsp;chaque&nbsp;canal</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">float&nbsp;</span><span class="style_11">tensionADC0&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">tensionADC0amp&nbsp;</span><span class="style_10">/&nbsp;</span><span class="style_11">Gain</span><span class="style_10">;</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">float&nbsp;</span><span class="style_11">tensionADC1&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">tensionADC1amp&nbsp;</span><span class="style_10">/&nbsp;</span><span class="style_11">Gain</span><span class="style_10">;</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;On&nbsp;convertit&nbsp;les&nbsp;tensions&nbsp;obtenues&nbsp;en&nbsp;millivolts</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">float&nbsp;</span><span class="style_11">tensionADC0mV&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">convertVoltageToMillivolts</span><span class="style_10">(</span><span class="style_11">tensionADC0</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">float&nbsp;</span><span class="style_11">tensionADC1mV&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">convertVoltageToMillivolts</span><span class="style_10">(</span><span class="style_11">tensionADC1</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;On&nbsp;calcule&nbsp;la&nbsp;puissance&nbsp;en&nbsp;watts&nbsp;à&nbsp;l'aide&nbsp;de&nbsp;l'équation&nbsp;issue&nbsp;du&nbsp;datasheet&nbsp;du&nbsp;DD112</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">PW_Dw&nbsp;</span><span class="style_10">=&nbsp;(</span><span class="style_5">int</span><span class="style_10">)(</span><span class="style_11">calculatePower</span><span class="style_10">(</span><span class="style_11">tensionADC0mV</span><span class="style_10">)&nbsp;*&nbsp;</span><span class="style_4">1000</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">PW_Rw&nbsp;</span><span class="style_10">=&nbsp;(</span><span class="style_5">int</span><span class="style_10">)(</span><span class="style_11">calculatePower</span><span class="style_10">(</span><span class="style_11">tensionADC1mV</span><span class="style_10">)&nbsp;*&nbsp;</span><span class="style_4">1000</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;On&nbsp;affiche&nbsp;les&nbsp;données&nbsp;converties&nbsp;et&nbsp;calculées</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">displayData</span><span class="style_10">(</span><span class="style_11">adc_data</span><span class="style_10">[</span><span class="style_4">0</span><span class="style_10">],&nbsp;</span><span class="style_11">adc_data</span><span class="style_10">[</span><span class="style_4">1</span><span class="style_10">],&nbsp;</span><span class="style_11">tensionADC0amp</span><span class="style_10">,&nbsp;</span><span class="style_11">tensionADC1amp</span><span class="style_10">,&nbsp;</span><span class="style_11">tensionADC0mV</span><span class="style_10">,&nbsp;</span><span class="style_11">tensionADC1mV</span><span class="style_10">,&nbsp;</span><span class="style_11">PW_Dw</span><span class="style_10">,&nbsp;</span><span class="style_11">PW_Rw</span><span class="style_10">);</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;fonction&nbsp;qui&nbsp;lit&nbsp;les&nbsp;signaux&nbsp;analogiques</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">read_adc_value</span><span class="style_10">()&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;On&nbsp;démarre&nbsp;la&nbsp;conversion&nbsp;ADC&nbsp;avec&nbsp;DMA</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">if&nbsp;</span><span class="style_10">(</span><span class="style_11">HAL_ADC_Start_DMA</span><span class="style_10">(&amp;</span><span class="style_11">hadc</span><span class="style_10">,&nbsp;(</span><span class="style_16">uint32_t</span><span class="style_10">*)&amp;</span><span class="style_11">adc_data</span><span class="style_10">,&nbsp;</span><span class="style_4">2</span><span class="style_10">)&nbsp;!=&nbsp;</span><span class="style_11">HAL_OK</span><span class="style_10">)</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_10">{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;On&nbsp;affiche&nbsp;l’erreur</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">printf</span><span class="style_10">(</span><span class="style_6">"Il&nbsp;y&nbsp;a&nbsp;eu&nbsp;un&nbsp;problème&nbsp;lors&nbsp;du&nbsp;start&nbsp;de&nbsp;la&nbsp;conversion\r\n"</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_10">}</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;Attendre&nbsp;la&nbsp;fin&nbsp;de&nbsp;la&nbsp;conversion</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">while&nbsp;</span><span class="style_10">(</span><span class="style_11">EndOfConversion&nbsp;</span><span class="style_10">==&nbsp;</span><span class="style_4">1</span><span class="style_10">)</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_10">{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">EndOfConversion&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">0</span><span class="style_10">;</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_10">}</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;On&nbsp;arrête&nbsp;la&nbsp;conversion&nbsp;ADC&nbsp;avec&nbsp;DMA</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">if&nbsp;</span><span class="style_10">(</span><span class="style_11">HAL_ADC_Stop_DMA</span><span class="style_10">(&amp;</span><span class="style_11">hadc</span><span class="style_10">)&nbsp;!=&nbsp;</span><span class="style_11">HAL_OK</span><span class="style_10">)</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_10">{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;On&nbsp;affiche&nbsp;l’erreur</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">printf</span><span class="style_10">(</span><span class="style_6">"Il&nbsp;y&nbsp;a&nbsp;eu&nbsp;un&nbsp;problème&nbsp;lors&nbsp;du&nbsp;stop&nbsp;de&nbsp;la&nbsp;conversion\r\n"</span><span class="style_10">);</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_10">}</span><br />
+        <span class="style_10">}</span><br />
+    </p>
+
+    <p>Dans l'espace nommé <b>Private user code</b> entre <b>USER CODE BEGIN 0</b> et <b>USER CODE END 0</b> comme ceci :</p>
+
+    <div><img src=".img/PROG5.png" alt="image non disponible"></div>
+
+    <p><i>Si le code copié est mal indenté, sélectionné-le et faite <b>Ctrl i</b></i></p>
+
+    <p>Il n'y a pas besoin de déclarer le prototype de ces fonctions car elles sont avant le main</p>
+
+    <p>On écrit dans le code du main avant la boucle, en copiant ces lignes :</p>
+
+    <p class="code">
+        <span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">500</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Délai&nbsp;pour&nbsp;les&nbsp;init()</span><br />
+        <span class="style_11">printf</span><span class="style_10">(</span><span class="style_6">"STM32&nbsp;Watt&nbsp;Meter\n\r"</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;écrit&nbsp;dans&nbsp;la&nbsp;com&nbsp;série</span><br />
+        <span class="style_11">lcd_init</span><span class="style_10">();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;initialise&nbsp;l'écran</span><br />
+        <span class="style_11">lcd_backlight</span><span class="style_10">(</span><span class="style_4">1</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;l'allume</span><br />
+        <span class="style_11">lcd_clear</span><span class="style_10">();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;efface&nbsp;tout</span><br />
+        <span class="style_11">lcd_set_cursor</span><span class="style_10">(</span><span class="style_4">0</span><span class="style_10">,&nbsp;</span><span class="style_4">0</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;place&nbsp;le&nbsp;curseur&nbsp;ligne&nbsp;0&nbsp;colonne&nbsp;0</span><br />
+        <span class="style_11">lcd_write_string</span><span class="style_10">(</span><span class="style_6">"STM32&nbsp;Watt&nbsp;Meter"</span><span class="style_10">);&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;écrit&nbsp;sur&nbsp;l'écran</span><br />
+        <span class="style_11">lcd_set_cursor</span><span class="style_10">(</span><span class="style_4">1</span><span class="style_10">,&nbsp;</span><span class="style_4">4</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;place&nbsp;le&nbsp;curseur&nbsp;ligne&nbsp;1&nbsp;colonne&nbsp;4</span><br />
+        <span class="style_11">lcd_write_string</span><span class="style_10">(</span><span class="style_6">"Init&nbsp;OK"</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;écrit&nbsp;sur&nbsp;l'écran</span><br />
+        <span class="style_11">printf</span><span class="style_10">(</span><span class="style_6">"Init&nbsp;OK\r\n"</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;On&nbsp;écrit&nbsp;dans&nbsp;la&nbsp;com&nbsp;série</span><br />
+        <span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">2000</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Délai&nbsp;pour&nbsp;l'affichage</span><br />
+    </p>
+
+    <p>Dans l'espace nommé <b>Private user code</b> entre <b>USER CODE BEGIN 2</b> et <b>USER CODE END 2</b> comme ceci :</p>
+
+    <div><img src=".img/PROG6.png" alt="image non disponible"></div>
+
+    <p>Puis dans la boucle en copiant ces lignes :</p>
+
+    <p class="code">
+        <span class="style_11">read_adc_value</span><span class="style_10">();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Appel&nbsp;de&nbsp;la&nbsp;fonction&nbsp;pour&nbsp;lire&nbsp;la&nbsp;valeur&nbsp;de&nbsp;l'ADC</span><br />
+        <span class="style_11">processADCData</span><span class="style_10">(</span><span class="style_11">adc_data</span><span class="style_10">[</span><span class="style_4">0</span><span class="style_10">],&nbsp;</span><span class="style_11">adc_data</span><span class="style_10">[</span><span class="style_4">1</span><span class="style_10">]);&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Traitement&nbsp;des&nbsp;données&nbsp;lues&nbsp;des&nbsp;2&nbsp;canaux&nbsp;de&nbsp;l'ADC</span><br />
+        <span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">1000</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Pause&nbsp;d'une&nbsp;seconde&nbsp;pour&nbsp;permettre&nbsp;un&nbsp;délai&nbsp;entre&nbsp;les&nbsp;lectures&nbsp;de&nbsp;l'ADC</span><br />
+    </p>
+
+    <p>Dans l'espace nommé <b>Infinite loop</b> entre <b>USER CODE BEGIN WHILE</b> et <b>USER CODE END WHILE</b> après le <b>while (1) {</b> comme ceci :</p>
+
+    <div><img src=".img/PROG7.png" alt="image non disponible"></div>
+
+    <p>Et pour finir, on va créer les fonctions du LCD et la callback de l'ADC dont on a déclaré les prototypes précédemment en copiant ces lignes :</p>
+
+    <p class="code">
+        <span class="style_2">//&nbsp;Fonction&nbsp;qui&nbsp;transmet&nbsp;un&nbsp;caractère&nbsp;via&nbsp;UART&nbsp;et&nbsp;le&nbsp;renvoie.Utilisé&nbsp;pour&nbsp;la&nbsp;sortie&nbsp;standard&nbsp;(printf).</span><br />
+        <span class="style_5">int&nbsp;</span><span class="style_11">__io_putchar</span><span class="style_10">(</span><span class="style_5">int&nbsp;</span><span class="style_11">ch</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">HAL_UART_Transmit</span><span class="style_10">(&amp;</span><span class="style_11">huart2</span><span class="style_10">,&nbsp;(</span><span class="style_16">uint8_t</span><span class="style_10">*)&amp;</span><span class="style_11">ch</span><span class="style_10">,&nbsp;</span><span class="style_4">1</span><span class="style_10">,&nbsp;</span><span class="style_4">0xFFFF</span><span class="style_10">);&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Pour&nbsp;Envoyer&nbsp;le&nbsp;caractère&nbsp;via&nbsp;UART</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;ITM_SendChar(ch);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Option&nbsp;alternative&nbsp;pour&nbsp;envoyer&nbsp;le&nbsp;caractère&nbsp;via&nbsp;ITM</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">return&nbsp;</span><span class="style_11">ch</span><span class="style_10">;</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;Fonction&nbsp;d'écriture&nbsp;d'une&nbsp;nibble&nbsp;(moitié&nbsp;d'octet)&nbsp;sur&nbsp;l'écran&nbsp;LCD.</span><br />
+        <span class="style_2">//&nbsp;Arguments&nbsp;:&nbsp;nibble&nbsp;-&nbsp;les&nbsp;4&nbsp;bits&nbsp;à&nbsp;écrire,&nbsp;rs&nbsp;-&nbsp;le&nbsp;bit&nbsp;registre&nbsp;(0&nbsp;pour&nbsp;commande,&nbsp;1&nbsp;pour&nbsp;données)</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_write_nibble</span><span class="style_10">(</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">nibble</span><span class="style_10">,&nbsp;</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">rs</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_16">uint8_t&nbsp;</span><span class="style_11">data&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">nibble&nbsp;</span><span class="style_10">&lt;&lt;&nbsp;</span><span class="style_11">D4_BIT</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Déplace&nbsp;la&nbsp;nibble&nbsp;aux&nbsp;bits&nbsp;appropriés</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">data&nbsp;</span><span class="style_10">|=&nbsp;</span><span class="style_11">rs&nbsp;</span><span class="style_10">&lt;&lt;&nbsp;</span><span class="style_11">RS_BIT</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Configure&nbsp;le&nbsp;bit&nbsp;registre</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">data&nbsp;</span><span class="style_10">|=&nbsp;</span><span class="style_11">backlight_state&nbsp;</span><span class="style_10">&lt;&lt;&nbsp;</span><span class="style_11">BL_BIT</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Inclut&nbsp;l'état&nbsp;du&nbsp;rétroéclairage&nbsp;dans&nbsp;les&nbsp;données</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">data&nbsp;</span><span class="style_10">|=&nbsp;</span><span class="style_4">1&nbsp;</span><span class="style_10">&lt;&lt;&nbsp;</span><span class="style_11">EN_BIT</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Configure&nbsp;le&nbsp;bit&nbsp;enable</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">HAL_I2C_Master_Transmit</span><span class="style_10">(&amp;</span><span class="style_11">hi2c1</span><span class="style_10">,&nbsp;</span><span class="style_11">I2C_ADDR&nbsp;</span><span class="style_10">&lt;&lt;&nbsp;</span><span class="style_4">1</span><span class="style_10">,&nbsp;&amp;</span><span class="style_11">data</span><span class="style_10">,&nbsp;</span><span class="style_4">1</span><span class="style_10">,&nbsp;</span><span class="style_4">100</span><span class="style_10">);&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Transmet&nbsp;les&nbsp;données&nbsp;à&nbsp;l'écran&nbsp;via&nbsp;I2C</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">1</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Attente&nbsp;après&nbsp;la&nbsp;transmission</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">data&nbsp;</span><span class="style_10">&amp;=&nbsp;~(</span><span class="style_4">1&nbsp;</span><span class="style_10">&lt;&lt;&nbsp;</span><span class="style_11">EN_BIT</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Désactive&nbsp;le&nbsp;bit&nbsp;enable</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">HAL_I2C_Master_Transmit</span><span class="style_10">(&amp;</span><span class="style_11">hi2c1</span><span class="style_10">,&nbsp;</span><span class="style_11">I2C_ADDR&nbsp;</span><span class="style_10">&lt;&lt;&nbsp;</span><span class="style_4">1</span><span class="style_10">,&nbsp;&amp;</span><span class="style_11">data</span><span class="style_10">,&nbsp;</span><span class="style_4">1</span><span class="style_10">,&nbsp;</span><span class="style_4">100</span><span class="style_10">);&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Retransmet&nbsp;les&nbsp;données&nbsp;sans&nbsp;l'activation</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;Fonction&nbsp;d'envoi&nbsp;de&nbsp;commande&nbsp;à&nbsp;l'écran&nbsp;LCD.</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_send_cmd</span><span class="style_10">(</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">cmd</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_16">uint8_t&nbsp;</span><span class="style_11">upper_nibble&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">cmd&nbsp;</span><span class="style_10">&gt;&gt;&nbsp;</span><span class="style_4">4</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Extrait&nbsp;les&nbsp;4&nbsp;bits&nbsp;supérieurs&nbsp;de&nbsp;la&nbsp;commande</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_16">uint8_t&nbsp;</span><span class="style_11">lower_nibble&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">cmd&nbsp;</span><span class="style_10">&amp;&nbsp;</span><span class="style_4">0x0F</span><span class="style_10">;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Extrait&nbsp;les&nbsp;4&nbsp;bits&nbsp;inférieurs&nbsp;de&nbsp;la&nbsp;commande</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">lcd_write_nibble</span><span class="style_10">(</span><span class="style_11">upper_nibble</span><span class="style_10">,&nbsp;</span><span class="style_4">0</span><span class="style_10">);&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Écrit&nbsp;la&nbsp;moitié&nbsp;supérieure&nbsp;de&nbsp;la&nbsp;commande</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">lcd_write_nibble</span><span class="style_10">(</span><span class="style_11">lower_nibble</span><span class="style_10">,&nbsp;</span><span class="style_4">0</span><span class="style_10">);&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Écrit&nbsp;la&nbsp;moitié&nbsp;inférieure&nbsp;de&nbsp;la&nbsp;commande</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">if&nbsp;</span><span class="style_10">(</span><span class="style_11">cmd&nbsp;</span><span class="style_10">==&nbsp;</span><span class="style_4">0x01&nbsp;</span><span class="style_10">||&nbsp;</span><span class="style_11">cmd&nbsp;</span><span class="style_10">==&nbsp;</span><span class="style_4">0x02</span><span class="style_10">)&nbsp;{&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Si&nbsp;le&nbsp;CMD&nbsp;est&nbsp;un&nbsp;reset&nbsp;ou&nbsp;un&nbsp;retour&nbsp;à&nbsp;la&nbsp;maison</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">2</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Attente&nbsp;de&nbsp;2ms&nbsp;pour&nbsp;compléter&nbsp;la&nbsp;commande</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_10">}</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;Fonction&nbsp;d'envoi&nbsp;d'un&nbsp;octet&nbsp;de&nbsp;données&nbsp;à&nbsp;l'écran&nbsp;LCD.</span><br />
+        <span class="style_2">//&nbsp;Les&nbsp;données&nbsp;sont&nbsp;envoyées&nbsp;en&nbsp;deux&nbsp;parties:&nbsp;le&nbsp;nibble&nbsp;supérieur&nbsp;et&nbsp;le&nbsp;nibble&nbsp;inférieur.</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_send_data</span><span class="style_10">(</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">data</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;<span class="style_16">uint8_t&nbsp;</span><span class="style_11">upper_nibble&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">data&nbsp;</span><span class="style_10">&gt;&gt;&nbsp;</span><span class="style_4">4</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Extraire&nbsp;les&nbsp;4&nbsp;bits&nbsp;supérieurs&nbsp;(le&nbsp;nibble&nbsp;supérieur)</span><br />
+        &nbsp;&nbsp;<span class="style_16">uint8_t&nbsp;</span><span class="style_11">lower_nibble&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_11">data&nbsp;</span><span class="style_10">&amp;&nbsp;</span><span class="style_4">0x0F</span><span class="style_10">;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Extraire&nbsp;les&nbsp;4&nbsp;bits&nbsp;inférieurs&nbsp;(le&nbsp;nibble&nbsp;inférieur)</span><br />
+        &nbsp;&nbsp;<span class="style_11">lcd_write_nibble</span><span class="style_10">(</span><span class="style_11">upper_nibble</span><span class="style_10">,&nbsp;</span><span class="style_4">1</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Envoyer&nbsp;le&nbsp;nibble&nbsp;supérieur&nbsp;à&nbsp;l'écran&nbsp;LCD&nbsp;avec&nbsp;RS&nbsp;fixé&nbsp;à&nbsp;1&nbsp;pour&nbsp;indiquer&nbsp;que&nbsp;ce&nbsp;sont&nbsp;des&nbsp;données</span><br />
+        &nbsp;&nbsp;<span class="style_11">lcd_write_nibble</span><span class="style_10">(</span><span class="style_11">lower_nibble</span><span class="style_10">,&nbsp;</span><span class="style_4">1</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Envoyer&nbsp;le&nbsp;nibble&nbsp;inférieur&nbsp;à&nbsp;l'écran&nbsp;LCD&nbsp;avec&nbsp;RS&nbsp;fixé&nbsp;à&nbsp;1&nbsp;pour&nbsp;indiquer&nbsp;que&nbsp;ce&nbsp;sont&nbsp;des&nbsp;données</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <br />
+        <span class="style_2">//&nbsp;Fonction&nbsp;d'initialisation&nbsp;de&nbsp;l'écran&nbsp;LCD.</span><br />
+        <span class="style_2">//&nbsp;Ce&nbsp;processus&nbsp;comprend&nbsp;une&nbsp;série&nbsp;de&nbsp;commandes&nbsp;pour&nbsp;configurer&nbsp;l'écran&nbsp;correctement.</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_init</span><span class="style_10">()&nbsp;{</span><br />
+        &nbsp;&nbsp;<span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">50</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Attendre&nbsp;50&nbsp;ms&nbsp;pour&nbsp;permettre&nbsp;à&nbsp;l'écran&nbsp;de&nbsp;s'allumer</span><br />
+        &nbsp;&nbsp;<span class="style_11">lcd_write_nibble</span><span class="style_10">(</span><span class="style_4">0x03</span><span class="style_10">,&nbsp;</span><span class="style_4">0</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Envoyer&nbsp;la&nbsp;commande&nbsp;d'initialisation&nbsp;0x03&nbsp;pour&nbsp;démarrer&nbsp;en&nbsp;mode&nbsp;4&nbsp;bits</span><br />
+        &nbsp;&nbsp;<span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">5</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Attendre&nbsp;5&nbsp;ms</span><br />
+        &nbsp;&nbsp;<span class="style_11">lcd_write_nibble</span><span class="style_10">(</span><span class="style_4">0x03</span><span class="style_10">,&nbsp;</span><span class="style_4">0</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Répéter&nbsp;la&nbsp;commande&nbsp;d'initialisation&nbsp;0x03</span><br />
+        &nbsp;&nbsp;<span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">1</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Attendre&nbsp;1&nbsp;ms</span><br />
+        &nbsp;&nbsp;<span class="style_11">lcd_write_nibble</span><span class="style_10">(</span><span class="style_4">0x03</span><span class="style_10">,&nbsp;</span><span class="style_4">0</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Répéter&nbsp;à&nbsp;nouveau&nbsp;la&nbsp;commande&nbsp;d'initialisation&nbsp;0x03&nbsp;pour&nbsp;assurer&nbsp;la&nbsp;mise&nbsp;en&nbsp;mode&nbsp;4&nbsp;bits</span><br />
+        &nbsp;&nbsp;<span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">1</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Attendre&nbsp;1&nbsp;ms</span><br />
+        &nbsp;&nbsp;<span class="style_11">lcd_write_nibble</span><span class="style_10">(</span><span class="style_4">0x02</span><span class="style_10">,&nbsp;</span><span class="style_4">0</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Envoyer&nbsp;la&nbsp;commande&nbsp;pour&nbsp;passer&nbsp;en&nbsp;mode&nbsp;4&nbsp;bits</span><br />
+        &nbsp;&nbsp;<span class="style_11">lcd_send_cmd</span><span class="style_10">(</span><span class="style_4">0x28</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Configurer&nbsp;le&nbsp;LCD&nbsp;en&nbsp;mode&nbsp;4&nbsp;bits,&nbsp;2&nbsp;lignes,&nbsp;5x7&nbsp;dots</span><br />
+        &nbsp;&nbsp;<span class="style_11">lcd_send_cmd</span><span class="style_10">(</span><span class="style_4">0x0C</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Activer&nbsp;l'affichage&nbsp;et&nbsp;désactiver&nbsp;le&nbsp;curseur</span><br />
+        &nbsp;&nbsp;<span class="style_11">lcd_send_cmd</span><span class="style_10">(</span><span class="style_4">0x06</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Définir&nbsp;le&nbsp;mode&nbsp;d'entrée&nbsp;à&nbsp;incrémentation&nbsp;sans&nbsp;décalage&nbsp;d'affichage</span><br />
+        &nbsp;&nbsp;<span class="style_11">lcd_send_cmd</span><span class="style_10">(</span><span class="style_4">0x01</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Effacer&nbsp;l'écran</span><br />
+        &nbsp;&nbsp;<span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">2</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Attendre&nbsp;2&nbsp;ms&nbsp;pour&nbsp;s'assurer&nbsp;que&nbsp;l'écran&nbsp;est&nbsp;bien&nbsp;effacé</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;Fonction&nbsp;d'écriture&nbsp;de&nbsp;chaîne&nbsp;de&nbsp;caractères&nbsp;sur&nbsp;l'écran&nbsp;LCD.</span><br />
+        <span class="style_2">//&nbsp;On&nbsp;utilise&nbsp;la&nbsp;fonction&nbsp;lcd_send_data&nbsp;pour&nbsp;envoyer&nbsp;chaque&nbsp;caractère.</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_write_string</span><span class="style_10">(</span><span class="style_5">char&nbsp;</span><span class="style_10">*</span><span class="style_11">str</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;<span class="style_5">while&nbsp;</span><span class="style_10">(*</span><span class="style_11">str</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">lcd_send_data</span><span class="style_10">(*</span><span class="style_11">str</span><span class="style_10">++);&nbsp;</span><span class="style_2">//&nbsp;Envoyer&nbsp;chaque&nbsp;caractère&nbsp;de&nbsp;la&nbsp;chaîne</span><br />
+        &nbsp;&nbsp;<span class="style_10">}</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;Fonction&nbsp;de&nbsp;positionnement&nbsp;du&nbsp;curseur&nbsp;de&nbsp;l'écran&nbsp;LCD&nbsp;sur&nbsp;la&nbsp;ligne&nbsp;et&nbsp;la&nbsp;colonne&nbsp;spécifiées.</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_set_cursor</span><span class="style_10">(</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">row</span><span class="style_10">,&nbsp;</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">column</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_16">uint8_t&nbsp;</span><span class="style_11">address</span><span class="style_10">;</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">switch&nbsp;</span><span class="style_10">(</span><span class="style_11">row</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">case&nbsp;</span><span class="style_4">0</span><span class="style_10">:</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">address&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">0x00</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Adresse&nbsp;de&nbsp;mémoire&nbsp;de&nbsp;la&nbsp;première&nbsp;ligne</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">break</span><span class="style_10">;</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">case&nbsp;</span><span class="style_4">1</span><span class="style_10">:</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">address&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">0x40</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Adresse&nbsp;de&nbsp;mémoire&nbsp;de&nbsp;la&nbsp;deuxième&nbsp;ligne</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">break</span><span class="style_10">;</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">default</span><span class="style_10">:</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">address&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">0x00</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Par&nbsp;défaut&nbsp;:&nbsp;première&nbsp;ligne</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_10">}</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">address&nbsp;</span><span class="style_10">+=&nbsp;</span><span class="style_11">column</span><span class="style_10">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Ajouter&nbsp;la&nbsp;colonne&nbsp;à&nbsp;l'adresse&nbsp;de&nbsp;base</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">lcd_send_cmd</span><span class="style_10">(</span><span class="style_4">0x80&nbsp;</span><span class="style_10">|&nbsp;</span><span class="style_11">address</span><span class="style_10">);&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Envoyer&nbsp;la&nbsp;commande&nbsp;de&nbsp;positionnement&nbsp;de&nbsp;curseur</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <br />
+        <span class="style_2">//&nbsp;Fonction&nbsp;d'effacement&nbsp;de&nbsp;l'écran&nbsp;LCD.</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_clear</span><span class="style_10">(</span><span class="style_5">void</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">lcd_send_cmd</span><span class="style_10">(</span><span class="style_4">0x01</span><span class="style_10">);&nbsp;</span><span class="style_2">//&nbsp;Envoyer&nbsp;la&nbsp;commande&nbsp;d'effacement&nbsp;de&nbsp;l'écran</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">HAL_Delay</span><span class="style_10">(</span><span class="style_4">2</span><span class="style_10">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style_2">//&nbsp;Attendre&nbsp;2&nbsp;ms&nbsp;pour&nbsp;s'assurer&nbsp;que&nbsp;l'effacement&nbsp;est&nbsp;complet</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;Fonction&nbsp;de&nbsp;contrôle&nbsp;d'état&nbsp;du&nbsp;rétroéclairage&nbsp;de&nbsp;l'écran&nbsp;LCD.</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">lcd_backlight</span><span class="style_10">(</span><span class="style_16">uint8_t&nbsp;</span><span class="style_11">state</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_5">if&nbsp;</span><span class="style_10">(</span><span class="style_11">state</span><span class="style_10">)&nbsp;{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">backlight_state&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">1</span><span class="style_10">;&nbsp;</span><span class="style_2">//&nbsp;Allumer&nbsp;le&nbsp;rétroéclairage</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_10">}&nbsp;</span><span class="style_5">else&nbsp;</span><span class="style_10">{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">backlight_state&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">0</span><span class="style_10">;&nbsp;</span><span class="style_2">//&nbsp;Éteindre&nbsp;le&nbsp;rétroéclairage</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_10">}</span><br />
+        <span class="style_10">}</span><br />
+        <br />
+        <span class="style_2">//&nbsp;Fonction&nbsp;de&nbsp;callback&nbsp;appelée&nbsp;lorsque&nbsp;la&nbsp;conversion&nbsp;de&nbsp;l'ADC&nbsp;est&nbsp;terminée.</span><br />
+        <span class="style_2">//&nbsp;Cette&nbsp;fonction&nbsp;est&nbsp;déclenchée&nbsp;automatiquement&nbsp;par&nbsp;l'ADC.</span><br />
+        <span class="style_5">void&nbsp;</span><span class="style_11">HAL_ADC_ConvCpltCallback</span><span class="style_10">(</span><span class="style_11">ADC_HandleTypeDef&nbsp;</span><span class="style_10">*</span><span class="style_11">hadc</span><span class="style_10">)</span><br />
+        <span class="style_10">{</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_2">//&nbsp;Met&nbsp;le&nbsp;flag&nbsp;EndOfConversion&nbsp;à&nbsp;1&nbsp;pour&nbsp;indiquer&nbsp;que&nbsp;la&nbsp;conversion&nbsp;est&nbsp;terminée</span><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="style_11">EndOfConversion&nbsp;</span><span class="style_10">=&nbsp;</span><span class="style_4">1</span><span class="style_10">;</span><br />
+        <span class="style_10">}</span><br />
+    </p>
+
+    <p>entre <b>USER CODE BEGIN 4</b> et <b>USER CODE END 4</b> comme ceci :</p>
+
+    <div><img src=".img/PROG8.png" alt="image non disponible"></div>
+
+    <p>Maintenant :</p>
+
+    <ol>
+        <li>On compile</li>
+        <li>On vérifie qu'il n'y a pas d'erreur</li>
+        <li>On téléverse le programme dans la carte</li>
+    </ol>
+
+    <div><img src=".img/PROG9.png" alt="image non disponible"></div>
+
+    <p>Voilà, l'écran devrait vous afficher l'init puis les datas, si tout est ok, on fait une archive du dossier du projet.</p>
+</body>
+</html>
