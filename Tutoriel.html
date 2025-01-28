@@ -6,137 +6,170 @@
     <meta name="description" content="STM32CUDEIDE">
     <title>STM32 DD112 Wattmeter</title>
     <style>
-        /* Styles pour le corps de page */
+        /* Styles pour le corps de la page */
         body {
-            font-family: 'Open Sans', sans-serif;   /* Utilise la police 'Open Sans' avec une alternative sans-serif */
-            line-height: 1.6;                       /* Définit l'espacement entre les lignes du texte */
-            margin: 0;                              /* Enlève la marge par défaut du navigateur */
-            padding: 20px;                          /* Ajoute un espacement interne de 20 pixels */
-            background:#f4f4f4;                   /* Définit la couleur de fond légèrement grise */
-            color:#333                            /* Définit la couleur du texte principale */
+            font-family: 'Open Sans', sans-serif; /* Utilise la police 'Open Sans', avec 'sans-serif' comme police de secours */
+            line-height: 1.6; /* Définit la hauteur de ligne à 1.6 fois la taille de police */
+            margin: 0; /* Supprime les marges par défaut de tout le document */
+            padding: 20px; /* Ajoute un remplissage de 20px autour du contenu du document */
+            background: #f4f4f4; /* Définit une couleur de fond gris clair pour l'ensemble de la page */
+            color: #333; /* Définit une couleur de texte gris foncé pour l'ensemble de la page */
         }
-
-        /* Styles pour les en-têtes */
+        /* Styles pour la barre de navigation */
+        .navbar {
+            position: fixed; /* Positionne la barre de navigation en haut de la page, même en défilement */
+            top: 0; /* Place la barre de navigation en haut de la page */
+            width: 100%; /* Établit la barre de navigation pour occuper toute la largeur de la fenêtre */
+            background-color: #004080; /* Définit une couleur de fond bleu foncé pour la barre de navigation */
+            z-index: 1000; /* Place la barre de navigation au premier plan (au-dessus de tout autre élément) */
+        }
+        .navbar a {
+            float: left; /* Aligne les liens de la barre de navigation à gauche */
+            display: block; /* Affiche chaque lien comme un bloc (prend toute la largeur disponible) */
+            color: #f2f2f2; /* Définit la couleur du texte des liens en blanc */
+            text-align: center; /* Centre le texte dans chaque lien */
+            padding: 14px 16px; /* Ajoute un remplissage de 14px en haut et en bas, et de 16px à gauche et à droite pour chaque lien */
+            text-decoration: none; /* Supprime le soulignement par défaut des liens */
+            transition: background-color 0.3s, color 0.3s; /* Ajoute une transition de 0.3s pour les changements de couleur de fond et de texte */
+        }
+        .navbar a:hover {
+            background-color: #0059b3; /* Change la couleur de fond des liens au survol de la souris à un bleu moyen */
+            color: #ffffff; /* Change la couleur du texte des liens au survol de la souris à blanc */
+        }
+        .dropdown {
+            float: left; /* Aligne les éléments déroulants à gauche */
+            overflow: hidden; /* Cache tout ce qui dépasse des éléments déroulants */
+        }
+        .dropdown .dropbtn {
+            cursor: pointer; /* Change le curseur en main pointer pour les boutons déroulants */
+            font-size: 16px;  /* Définit la taille de police à 16px pour les boutons déroulants */
+            border: none; /* Supprime les bordures des boutons déroulants */
+            outline: none; /* Supprime les contours des boutons déroulants lorsque vous cliquez dessus */
+            color: #f2f2f2; /* Définit la couleur du texte des boutons déroulants en blanc */
+            padding: 14px 16px; /* Ajoute un remplissage de 14px en haut et en bas, et de 16px à gauche et à droite pour les boutons déroulants */
+            background-color: inherit; /* Utilise la couleur de fond héritée (ici, la couleur de fond de la barre de navigation) */
+            margin: 0; /* Supprime les marges des boutons déroulants */
+            transition: background-color 0.3s, color 0.3s; /* Ajoute une transition de 0.3s pour les changements de couleur de fond et de texte */
+        }
+        .navbar a:hover, .dropdown:hover .dropbtn {
+            background-color: #0059b3; /* Change la couleur de fond au survol de la barre de navigation et des boutons déroulants par un bleu moyen */
+            color: #ffffff; /* Change la couleur du texte au survol de la barre de navigation et des boutons déroulants en blanc */
+        }
+        .dropdown-content {
+            display: none; /* Cache le contenu déroulant par défaut */
+            position: absolute; /* Positionne le contenu déroulant de façon absolue, relatif à son conteneur parent */
+            background-color: #e6f2ff; /* Définit une couleur de fond bleu très clair pour les éléments déroulants */
+            min-width: 160px; /* Définit la largeur minimale du contenu déroulant à 160px */
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Ajoute une ombre portée pour donner un effet de surélévation */
+            z-index: 1; /* Place le contenu déroulant au premier plan, au-dessus des autres éléments */
+        }
+        .dropdown-content a {
+            float: none; /* Supprime l'effet de flottement à gauche des liens dans le contenu déroulant */
+            color: #004080; /* Définit la couleur du texte des liens en bleu foncé */
+            padding: 12px 16px; /* Ajoute un remplissage de 12px en haut et en bas, et de 16px à gauche et à droite pour les liens */
+            text-decoration: none; /* Supprime le soulignement des liens */
+            display: block; /* Affiche chaque lien comme un bloc (prend toute la largeur disponible) */
+            text-align: left; /* Aligne le texte des liens à gauche */
+            transition: background-color 0.3s, color 0.3s; /* Ajoute une transition de 0.3s pour les changements de couleur de fond et de texte */
+        }
+        .dropdown-content a:hover {
+            background-color: #cce0ff; /* Change la couleur de fond des liens au survol de la souris à un bleu clair */
+            color: #004080; /* Change la couleur du texte des liens au survol de la souris en bleu foncé */
+        }
+        .dropdown:hover .dropdown-content {
+            display: block; /* Affiche le contenu déroulant lorsque l'utilisateur survole l'élément déroulant */
+        }
+        .content {
+            padding: 20px; /* Ajoute un remplissage de 20px autour du contenu principal */
+            margin-top: 60px; /* Ajoute une marge en haut de 60px pour laisser l'espace sous la barre de navigation */
+        }
+        /* Styles pour les titres */
         h1 {
-            font-size: 2.5em;        /* taille de la police de 2,5 fois la taille normale */
-            color: #0055a5;        /* couleur bleu foncé pour le texte */
-            text-align: center;      /* centre le texte horizontalement */
+            font-size: 2.5em; /* Définit la taille de police à 2.5 fois la taille normale de la police */
+            color: #0055a5; /* Utilise une couleur bleu vif pour le texte */
+            text-align: center; /* Centre le texte */
         }
-
         h2 {
-            font-size: 2em;          /* taille de la police 2 fois la taille normale */
-            color: #0055a5;        /* couleur bleu foncé pour le texte */
-            text-align: center;      /* centre le texte horizontalement */
+            font-size: 2em; /* Définit la taille de police à 2 fois la taille normale de la police */
+            color: #0055a5; /* Utilise la même couleur bleu vif pour le texte */
+            text-align: center; /* Centre le texte */
         }
-
         h3 {
-            font-size: 1.5em;        /* taille de la police 1,5 fois la taille normale */
-            color: #003366;        /* couleur bleu foncé pour le texte */
+            font-size: 1.5em; /* Définit la taille de police à 1.5 fois la taille normale de la police */
+            color: #003366; /* Utilise une couleur bleu foncé pour le texte */
         }
-
         /* Styles pour les liens */
         a {
-            color: #0095ff;         /* couleur bleu pour les liens */
-            text-decoration: none;    /* enlève la décoration par défaut (soulignement) */
+            color: #0055a5; /* Utilise une couleur bleu vif pour les liens */
+            text-decoration: none; /* Supprime le soulignement des liens par défaut */
         }
-
         a:hover {
-            text-decoration: underline; /* ajoute un soulignement au survol */
+            text-decoration: underline; /* Ajoute un soulignement aux liens lors du survol */
         }
-
         /* Styles pour les listes */
-
         ul, ol {
-            margin: 5px 0;          /* marge verticale de 5 pixels */
-            margin-left: 10%;
-            padding: 0 20px;        /* ajoute un espacement à gauche de 20 pixels */
+            margin: 10px 0; /* Définit la marge en haut et en bas à 10px */
+            padding: 0 20px; /* Définit le remplissage à 20px à gauche et à droite, 0 à gauche et droite */
         }
-
         li {
-            margin-bottom: 5px;     /* ajoute un espacement inférieur de 5 pixels pour chaque élément de liste */
+            margin-bottom: 10px; /* Ajoute une marge inférieure de 10px entre les éléments de liste */
         }
-
         /* Styles pour les images */
         img {
-            display: block;         /* affiche l'image en tant qu'élément de bloc */
-            margin: 20px auto;      /* centre l'image horizontalement avec une marge verticale de 20 pixels */
-            max-width: 100%;        /* empêche l'image de dépasser la largeur de son conteneur */
+            display: block; /* Affiche les images comme des blocs pour remplir toute la largeur disponible */
+            margin: 20px auto; /* Ajoute une marge de 20px en haut et en bas, et centre les images horizontalement */
+            max-width: 100%; /* Limite la largeur des images à 100% de leur conteneur pour éviter les débordements */
         }
-
-        /* Styles pour les éléments de code */
+        /* Styles pour les éléments en gras */
         b {
-            color: #d70000;                                    /* couleur rouge foncé pour l'élément <b> */
-            font-family: 'Courier New', Courier, monospace;      /* utilise la police 'Courier New' ou une alternative monospace */
+            color: #e60028; /* Utilise une couleur rouge vif pour le texte en gras */
+            font-family: 'Courier New', Courier, monospace; /* Utilise une police à chasse fixe pour le texte en gras */
         }
-
-        .code {
-            border: 2px solid #000;       /* Bordure noire de 2 pixels */
-            padding: 10px;                  /* Espacement interne de 10 pixels */
-            margin: 10px auto;              /* Centre l'élément horizontalement */
-            background-color: #f4f4f4;    /* Fond légèrement gris */
-            font-family: monospace;         /* Police monospace pour le code */
-            white-space: pre-wrap;          /* Conserves les espaces et les sauts de ligne, mais autorise les retours à la ligne */
-            word-wrap: break-word;          /* Permet de couper les mots trop longs pour éviter de dépasser */
-            overflow: auto;                 /* Ajoute des barres de défilement si le contenu dépasse */
-            display: block;                 /* Assure que l'élément prend toute la largeur disponible */
-            line-height: 0.8;               /* Réduit l'espacement entre les lignes */
-            width: 80%;                     /* Largeur de l'élément à 60% de la largeur du conteneur */
-        }
-
-        .style_1
-        {
-            color: #d00000;
-        }
-
-        .style_2
-        {
-            color: #d00000;
-        }
-
-        .style_4
-        {
-            color: #007f00;
-        }
-
-        .style_5
-        {
-            color: #00007f;
-            font-weight: bold;
-        }
-
-        .style_6
-        {
-            color: #ff8000;
-        }
-
-        .style_9
-        {
-            color: #007f7f;
-        }
-
-        .style_10
-        {
-            color: #301010;
-        }
-
-        .style_11
-        {
-            color: #000000;
-        }
-
-        .style_16
-        {
-            color: #991111;
-            font-weight: bold;
-        }
-
-    </style>
+        </style>
 </head>
 <body>
 
-    <h1>STM32 DD112 Wattmeter</h1>
+    <div class="navbar">
+        <div class="dropdown">
+            <button class="dropbtn"  onclick="window.location.href='#home'">Accueil
+                <i class="fa fa-caret-down"></i>
+            </button>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn"  onclick="window.location.href='#crea'">Création du programme à partir de zéro
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="#1">Logiciels nécessaires</a>
+                <a href="#2">Commencer un nouveau projet</a>
+                <a href="#3">Activer la communication I2C</a>
+                <a href="#4">Activer l'ADC avec plusieurs canaux</a>
+                <a href="#5">Générer le code</a>
+                <a href="#6">Modification du fichier main.c</a>
+                <a href="#7">Compilation et téléversement</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn"  onclick="window.location.href='#section1'">Importer le programme depuis l'archive
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="#8">Logiciels nécessaires</a>
+                <a href="#9">Importer le projet</a>
+            </div>
+        </div> 
+        <div class="dropdown">
+            <button class="dropbtn"  onclick="window.location.href='#10'">Pinout STM32L152RE
+                <i class="fa fa-caret-down"></i>
+            </button>
+        </div> 
+    </div> 
 
-    <h2 id="1">Création du programme à partir de zéro</h2>
+    <h1 id="home">STM32 DD112 Wattmeter</h1>
+
+    <h2 id="crea">Création du programme à partir de zéro</h2>
+
+    <h3 id="1">Logiciels nécessaires</h3>
 
     <p>Il faut au préalable installer la suite logiciel ST suivante :</p>
 
@@ -147,6 +180,8 @@
     </ul>
 
     <p>Il faut également disposé d'une connection internet</p>
+
+    <h3 id="2">Commencer un nouveau projet</h3>
 
     <p>On démarre <b>STM32CubeIDE</b> et on clique sur le <b>i</b> puis <b>Start new STM32 project</b>.</p>
 
@@ -185,7 +220,7 @@
     <h2>Configurer la carte STM32</h2>
 
 
-    <h3>Activer la communication I2C</h3>
+    <h3 id="3">Activer la communication I2C</h3>
 
     <p>Le protocole I2C est couramment utilisé pour la communication entre des microcontrôleurs et des périphériques externes,
         on peut théoriquement connecter jusqu'à 127 périphériques sur un seul bus maître.
@@ -211,7 +246,7 @@
 
 
 
-    <h3 id="3">Activer l'ADC (Analog-to-Digital Converter) avec plusieurs canaux</h3>
+    <h3 id="4">Activer l'ADC (Analog-to-Digital Converter) avec plusieurs canaux</h3>
 
     <p>L'ADC (Analog-to-Digital Converter) sur les microcontrôleurs STM32 est un outil puissant pour convertir des signaux analogiques en données numériques.</p>
 
@@ -267,6 +302,10 @@
 
     <div><img src=".img/ADC6.png" alt="image non disponible"></div>
 
+
+
+    <h3 id="5">Générer le code</h3>
+
     <p>On va activé la prise en compte des chiffres décimaux par le programme,
         pour cela on clique droit avec la souris sur le projet et on va dans <b>Propriétés</b>.</p>
 
@@ -288,6 +327,8 @@
 
 
     <h2>Création du programme</h2>
+
+    <h3 id="6">Modification du fichier main.c</h3>
 
     <p>On va donc modifier le fichier <b>main.c</b>, on commence par importer les bibliothèques nécessaire en copiant ces 2 lignes :</p>
 
@@ -588,6 +629,9 @@
 
     <div><img src=".img/PROG8.png" alt="image non disponible"></div>
 
+
+    <h3 id="7">Compilation et téléversement</h3>
+
     <p>Maintenant :</p>
 
     <ol>
@@ -599,5 +643,62 @@
     <div><img src=".img/PROG9.png" alt="image non disponible"></div>
 
     <p>Voilà, l'écran devrait vous afficher l'init puis les datas, si tout est ok, on fait une archive du dossier du projet.</p>
+
+    <h2 id="arch">Importer le programme depuis l'archive du projet</h2>
+
+    <h3 id="8">Logiciels nécessaires</h3>
+
+    <p>Il faut au préalable avoir installé la suite logiciel ST suivante : </p>
+
+    <ul>
+        <li><a href="https://www.st.com/en/development-tools/stm32cubemx.html" target="_blank">STM32CubeMX</a></li>
+        <li><a href="https://www.st.com/en/development-tools/stm32cubeide.html" target="_blank">STM32CubeIDE</a></li>
+        <li><a href="https://www.st.com/en/development-tools/stm32cubeprog.html" target="_blank">STM32CubeProgrammer</a></li>
+    </ul>    
+
+    <h3 id="9">Importer le projet</h3>
+
+    <p>On démarre <b>STM32CubeIDE</b> :</p>
+
+    <ol>
+        <li>On clique sur le <b>i</b></li>
+        <li>On clique sur <b>Import project</b></li>
+    </ol>
+
+    <img src=".img/StartArch1.png" alt="STM32CubeIDE">
+
+    <p>Ensuite, on clique sur <b>Archive...</b> :</p>
+
+    <img src=".img/IMPARCH1.png" alt="STM32CubeIDE">
+
+    <p>On choisi l'archive du projet présente dans le dossier <b>Projet STM32 DD112 Wattmeter</b> à coté du Readme</p>
+
+    <img src=".img/IMPARCH2.png" alt="STM32CubeIDE">
+
+    <p>On clique maintenant sur <b>Finish</b></p>
+
+    <img src=".img/IMPARCH3.png" alt="STM32CubeIDE">
+
+    <p>Après quelques instant, quand le programme a fini l'importation :</p>
+
+    <ol>
+        <li>On déroule le projet et sélectionne STM32_DD112_Wattmeter</li>
+        <li>Puis on compile le projet </li>
+        <li>On vérifie qu'il n'y a pas d'erreur </li>
+        <li>On branche la carte si c'est pas déjà fait et on téléverse le programme </li>
+    </ol>
+
+    <img src=".img/IMPARCH4.png" alt="STM32CubeIDE">
+
+    <p>Si tout est correct vous devriez avoir l'écran qui affiche l'init puis les datas.</p>
+
+
+    <h1 id="10">Pinout STM32L152RE</h1>
+
+    <div><img src=".img/STM32nucleo-L152RE-Pin.png" alt="image non disponible"></div>
+
+    <div><img src=".img/STM32nucleo-L152RE-PinoutL.png" alt="image non disponible"></div>
+
+    <div><img src=".img/STM32nucleo-L152RE-PinoutR.png" alt="image non disponible"></div>
 </body>
 </html>
