@@ -10,3 +10,6 @@
 
 [Tuto_inst_arch.html](/Tuto_inst_arch.html)
 
+### Pinout STM32L152RE
+
+[Pinout_STM32L152RE.html](/Pinout_STM32L152RE.html)
