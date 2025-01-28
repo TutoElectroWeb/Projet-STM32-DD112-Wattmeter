@@ -1,0 +1,119 @@
+/* Styles pour le corps de la page */
+body {
+    font-family: 'Open Sans', sans-serif; /* Utilise la police 'Open Sans', avec 'sans-serif' comme police de secours */
+    line-height: 1.6; /* Définit la hauteur de ligne à 1.6 fois la taille de police */
+    margin: 0; /* Supprime les marges par défaut de tout le document */
+    padding: 20px; /* Ajoute un remplissage de 20px autour du contenu du document */
+    background: #f4f4f4; /* Définit une couleur de fond gris clair pour l'ensemble de la page */
+    color: #333; /* Définit une couleur de texte gris foncé pour l'ensemble de la page */
+}
+/* Styles pour la barre de navigation */
+.navbar {
+    position: fixed; /* Positionne la barre de navigation en haut de la page, même en défilement */
+    top: 0; /* Place la barre de navigation en haut de la page */
+    width: 100%; /* Établit la barre de navigation pour occuper toute la largeur de la fenêtre */
+    background-color: #004080; /* Définit une couleur de fond bleu foncé pour la barre de navigation */
+    z-index: 1000; /* Place la barre de navigation au premier plan (au-dessus de tout autre élément) */
+}
+.navbar a {
+    float: left; /* Aligne les liens de la barre de navigation à gauche */
+    display: block; /* Affiche chaque lien comme un bloc (prend toute la largeur disponible) */
+    color: #f2f2f2; /* Définit la couleur du texte des liens en blanc */
+    text-align: center; /* Centre le texte dans chaque lien */
+    padding: 14px 16px; /* Ajoute un remplissage de 14px en haut et en bas, et de 16px à gauche et à droite pour chaque lien */
+    text-decoration: none; /* Supprime le soulignement par défaut des liens */
+    transition: background-color 0.3s, color 0.3s; /* Ajoute une transition de 0.3s pour les changements de couleur de fond et de texte */
+}
+.navbar a:hover {
+    background-color: #0059b3; /* Change la couleur de fond des liens au survol de la souris à un bleu moyen */
+    color: #ffffff; /* Change la couleur du texte des liens au survol de la souris à blanc */
+}
+.dropdown {
+    float: left; /* Aligne les éléments déroulants à gauche */
+    overflow: hidden; /* Cache tout ce qui dépasse des éléments déroulants */
+}
+.dropdown .dropbtn {
+    cursor: pointer; /* Change le curseur en main pointer pour les boutons déroulants */
+    font-size: 16px;  /* Définit la taille de police à 16px pour les boutons déroulants */
+    border: none; /* Supprime les bordures des boutons déroulants */
+    outline: none; /* Supprime les contours des boutons déroulants lorsque vous cliquez dessus */
+    color: #f2f2f2; /* Définit la couleur du texte des boutons déroulants en blanc */
+    padding: 14px 16px; /* Ajoute un remplissage de 14px en haut et en bas, et de 16px à gauche et à droite pour les boutons déroulants */
+    background-color: inherit; /* Utilise la couleur de fond héritée (ici, la couleur de fond de la barre de navigation) */
+    margin: 0; /* Supprime les marges des boutons déroulants */
+    transition: background-color 0.3s, color 0.3s; /* Ajoute une transition de 0.3s pour les changements de couleur de fond et de texte */
+}
+.navbar a:hover, .dropdown:hover .dropbtn {
+    background-color: #0059b3; /* Change la couleur de fond au survol de la barre de navigation et des boutons déroulants par un bleu moyen */
+    color: #ffffff; /* Change la couleur du texte au survol de la barre de navigation et des boutons déroulants en blanc */
+}
+.dropdown-content {
+    display: none; /* Cache le contenu déroulant par défaut */
+    position: absolute; /* Positionne le contenu déroulant de façon absolue, relatif à son conteneur parent */
+    background-color: #e6f2ff; /* Définit une couleur de fond bleu très clair pour les éléments déroulants */
+    min-width: 160px; /* Définit la largeur minimale du contenu déroulant à 160px */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Ajoute une ombre portée pour donner un effet de surélévation */
+    z-index: 1; /* Place le contenu déroulant au premier plan, au-dessus des autres éléments */
+}
+.dropdown-content a {
+    float: none; /* Supprime l'effet de flottement à gauche des liens dans le contenu déroulant */
+    color: #004080; /* Définit la couleur du texte des liens en bleu foncé */
+    padding: 12px 16px; /* Ajoute un remplissage de 12px en haut et en bas, et de 16px à gauche et à droite pour les liens */
+    text-decoration: none; /* Supprime le soulignement des liens */
+    display: block; /* Affiche chaque lien comme un bloc (prend toute la largeur disponible) */
+    text-align: left; /* Aligne le texte des liens à gauche */
+    transition: background-color 0.3s, color 0.3s; /* Ajoute une transition de 0.3s pour les changements de couleur de fond et de texte */
+}
+.dropdown-content a:hover {
+    background-color: #cce0ff; /* Change la couleur de fond des liens au survol de la souris à un bleu clair */
+    color: #004080; /* Change la couleur du texte des liens au survol de la souris en bleu foncé */
+}
+.dropdown:hover .dropdown-content {
+    display: block; /* Affiche le contenu déroulant lorsque l'utilisateur survole l'élément déroulant */
+}
+.content {
+    padding: 20px; /* Ajoute un remplissage de 20px autour du contenu principal */
+    margin-top: 60px; /* Ajoute une marge en haut de 60px pour laisser l'espace sous la barre de navigation */
+}
+/* Styles pour les titres */
+h1 {
+    font-size: 2.5em; /* Définit la taille de police à 2.5 fois la taille normale de la police */
+    color: #0055a5; /* Utilise une couleur bleu vif pour le texte */
+    text-align: center; /* Centre le texte */
+}
+h2 {
+    font-size: 2em; /* Définit la taille de police à 2 fois la taille normale de la police */
+    color: #0055a5; /* Utilise la même couleur bleu vif pour le texte */
+    text-align: center; /* Centre le texte */
+}
+h3 {
+    font-size: 1.5em; /* Définit la taille de police à 1.5 fois la taille normale de la police */
+    color: #003366; /* Utilise une couleur bleu foncé pour le texte */
+}
+/* Styles pour les liens */
+a {
+    color: #0055a5; /* Utilise une couleur bleu vif pour les liens */
+    text-decoration: none; /* Supprime le soulignement des liens par défaut */
+}
+a:hover {
+    text-decoration: underline; /* Ajoute un soulignement aux liens lors du survol */
+}
+/* Styles pour les listes */
+ul, ol {
+    margin: 10px 0; /* Définit la marge en haut et en bas à 10px */
+    padding: 0 20px; /* Définit le remplissage à 20px à gauche et à droite, 0 à gauche et droite */
+}
+li {
+    margin-bottom: 10px; /* Ajoute une marge inférieure de 10px entre les éléments de liste */
+}
+/* Styles pour les images */
+img {
+    display: block; /* Affiche les images comme des blocs pour remplir toute la largeur disponible */
+    margin: 20px auto; /* Ajoute une marge de 20px en haut et en bas, et centre les images horizontalement */
+    max-width: 100%; /* Limite la largeur des images à 100% de leur conteneur pour éviter les débordements */
+}
+/* Styles pour les éléments en gras */
+b {
+    color: #e60028; /* Utilise une couleur rouge vif pour le texte en gras */
+    font-family: 'Courier New', Courier, monospace; /* Utilise une police à chasse fixe pour le texte en gras */
+}
