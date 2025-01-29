@@ -2,6 +2,4 @@
 
 ## Tutoriel
 
-Dézipper le dossier, ouvrir la page web en local pour suivre le tutoriel d'installation.
-
-[Tutoriel.html](/Tutoriel.html)
+Télécharger et dézipper le dossier, ouvrir la page web : [Tutoriel.html](/Tutoriel.html) en local pour suivre le tutoriel d'installation.
