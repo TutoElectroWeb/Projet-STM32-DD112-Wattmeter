@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="Style.css">
     <title>Tutoriel STM32 DD112 Wattmeter</title>
 </head>
-<body>
-
+<body id="home">
     <div class="navbar">
         <div class="dropdown">
             <button class="dropbtn"  onclick="window.location.href='#home'">Accueil
@@ -45,7 +44,18 @@
         </div> 
     </div> 
 
-    <h1 id="home">STM32 DD112 Wattmeter</h1>
+    <script>
+        function toggleMenu() {
+            var x = document.getElementById("myNavbar");
+            if (x.className === "navbar") {
+                x.className += " responsive";
+            } else {
+                x.className = "navbar";
+            }
+        }
+    </script>
+
+    <h1>STM32 DD112 Wattmeter</h1>
 
     <h2 id="crea">Création du programme à partir de zéro</h2>
 

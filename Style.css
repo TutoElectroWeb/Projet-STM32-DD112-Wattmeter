@@ -117,3 +117,52 @@ b {
     color: #e60028; /* Utilise une couleur rouge vif pour le texte en gras */
     font-family: 'Courier New', Courier, monospace; /* Utilise une police à chasse fixe pour le texte en gras */
 }
+/* Styles pour le code */
+.code {
+    background-color: #f4f4f4; /* Définit une couleur de fond gris clair pour les éléments de code */
+    padding: 2px 4px; /* Ajoute un remplissage de 2px en haut et en bas, et de 4px à gauche et à droite pour les éléments de code */
+    border: 1px solid #000000; /* Ajoute une bordure noire autour du bloc de code */
+    overflow-x: auto; /* Permet le défilement horizontal si le contenu dépasse la largeur du bloc */
+    white-space: pre; /* Préserve les espaces et les tabulations */
+    font-family: 'Courier New', Courier, monospace; /* Utilise une police à chasse fixe pour le bloc de code */
+    line-height: 0.8; /* Diminue la hauteur de ligne pour une meilleure lisibilité */
+    width: 80%; /* Définit la largeur du bloc */
+    margin: auto; /* Centre horizontalement le bloc */
+    display: block; /* Garantit que l'élément est un bloc */
+}
+/* Styles pour les balises de code */
+.style_2
+{
+    color: #d00000;     /* Utilise une couleur rouge foncé pour le texte */ 
+}
+.style_4
+{
+    color: #007f00;     /* Utilise une couleur verte pour le texte */		
+}
+.style_5
+{
+    color: #00007f;        /* Utilise une couleur bleue pour le texte */	
+    font-weight: bold;      /* Met le texte en gras */
+}
+.style_6
+{
+    color: #ff8000;	    /* Utilise une couleur orange pour le texte */	
+}
+.style_10
+{
+    color: #301010;	    /* Utilise une couleur marron foncé pour le texte */	
+}
+.style_11
+{
+    color: #000000;	    /* Utilise une couleur noire pour le texte */	
+}
+.style_16
+{
+    color: #991111;	     /* Utilise une couleur rouge foncé pour le texte */	
+    font-weight: bold;        /* Met le texte en gras */
+}
+.style_19
+{
+    color: #0000d0;        /* Utilise une couleur bleue pour le texte */
+    font-weight: bold;       /* Met le texte en gras */
+}
