@@ -3,7 +3,9 @@
 ## Aperçu
 
 Ce module est un amplificateur de tension uV/mV de haute précision ou un amplificateur d’instrumentation de petits signaux basé sur le circuit intégré AD620 d’Analog Devices. 
+
 Le module peut amplifier les tensions uV et mV AC ou DC. De plus, vous pouvez ajuster le décalage de niveau zéro de votre signal de sortie pour améliorer la précision de votre projet. 
+
 En interne, ce module crée une alimentation séparée de votre alimentation CC pour ajuster le décalage de votre signal de sortie. 
 La puissance de sortie divisée est disponible pour l’utilisateur avec la borne V- comme alimentation négative.
 
