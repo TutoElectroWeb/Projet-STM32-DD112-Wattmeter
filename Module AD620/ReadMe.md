@@ -6,7 +6,7 @@ Ce module est un amplificateur de tension uV/mV de haute précision ou un amplif
 
 ## Image et étiquette du produit
 
-![AD620 adj petits amplificateurs de signal étiquettes](#PIC1-2.png)
+![AD620 adj petits amplificateurs de signal étiquettes](PIC1-2.png)
 
 ## Comment utiliser ce module
 
